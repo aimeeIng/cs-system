@@ -2,8 +2,11 @@ package com.cs.cs.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import lombok.Data;
+
 
 @Entity
+@Data
 public class Ticket {
 
     @Id
@@ -49,5 +52,14 @@ public class Ticket {
 
     public int getWindowNumber() {
         return this.windowNumber;
+    }
+
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }
