@@ -32,4 +32,12 @@ public class TicketService {
     private String generateTicketNumber(ServiceType type, int pos) {
         return type.name().charAt(0) + "-" + String.format("%03d", pos);
     }
+    public Ticket getTicketById(Long id) {
+        return ticketRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+    }
+
+    public void deleteTicket(Long id) {
+        ticketRepository.deleteById(id);
+    }
 }
