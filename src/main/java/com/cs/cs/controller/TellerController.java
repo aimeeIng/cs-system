@@ -1,15 +1,13 @@
 package com.cs.cs.controller;
 
-package com.bank.queue.controller;
-
-import com.bank.queue.dto.DisplayUpdate;
-import com.bank.queue.model.Ticket;
-import com.bank.queue.model.Window;
-import com.bank.queue.repository.TicketRepository;
-import com.bank.queue.repository.WindowRepository;
-import com.bank.queue.service.NotificationService;
-import com.bank.queue.service.QueueService;
-import com.bank.queue.service.WebSocketService;
+import com.cs.cs.dto.DisplayUpdate;
+import com.cs.cs.model.Ticket;
+import com.cs.cs.model.Window;
+import com.cs.cs.repository.TicketRepository;
+import com.cs.cs.repository.WindowRepository;
+import com.cs.cs.service.NotificationService;
+import com.cs.cs.service.QueueService;
+import com.cs.cs.service.WebSocketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

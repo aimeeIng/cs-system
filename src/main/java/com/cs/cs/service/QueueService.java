@@ -1,10 +1,8 @@
 package com.cs.cs.service;
 
-package com.bank.queue.service;
-
-import com.bank.queue.dto.QueueStats;
-import com.bank.queue.model.Ticket;
-import com.bank.queue.repository.TicketRepository;
+import com.cs.cs.dto.QueueStats;
+import com.cs.cs.model.Ticket;
+import com.cs.cs.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

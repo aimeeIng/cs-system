@@ -1,13 +1,11 @@
 package com.cs.cs.service;
 
-package com.bank.queue.service;
-
-import com.bank.queue.dto.CreateTicketRequest;
-import com.bank.queue.dto.TicketResponse;
-import com.bank.queue.model.Service;
-import com.bank.queue.model.Ticket;
-import com.bank.queue.repository.ServiceRepository;
-import com.bank.queue.repository.TicketRepository;
+import com.cs.cs.dto.CreateTicketRequest;
+import com.cs.cs.dto.TicketResponse;
+import com.cs.cs.model.Service;
+import com.cs.cs.model.Ticket;
+import com.cs.cs.repository.ServiceRepository;
+import com.cs.cs.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;

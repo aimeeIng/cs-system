@@ -1,47 +1,28 @@
 package com.cs.cs.service;
 
-package com.bank.queue.service;
-
-import com.bank.queue.model.Notification;
-import com.bank.queue.model.Ticket;
-import com.bank.queue.repository.NotificationRepository;
-import com.twilio.Twilio;
-import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.type.PhoneNumber;
+import com.cs.cs.model.Notification;
+import com.cs.cs.model.Ticket;
+import com.cs.cs.repository.NotificationRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class NotificationService {
-
-    @Value("${twilio.account.sid}")
-    private String accountSid;
-
-    @Value("${twilio.auth.token}")
-    private String authToken;
-
-    @Value("${twilio.phone.number}")
-    private String fromPhoneNumber;
 
     private final NotificationRepository notificationRepository;
 
-    public NotificationService(NotificationRepository notificationRepository) {
-        this.notificationRepository = notificationRepository;
-    }
-
+    /**
+     * MOCK SMS SENDER - Logs to console instead of sending real SMS
+     */
     public void sendSMS(String toPhoneNumber, String messageText, Ticket ticket) {
         try {
-            Twilio.init(accountSid, authToken);
+            // Log instead of sending real SMS
+            log.info("📱 MOCK SMS to {}: {}", toPhoneNumber, messageText);
 
-            Message message = Message.creator(
-                    new PhoneNumber(toPhoneNumber),
-                    new PhoneNumber(fromPhoneNumber),
-                    messageText
-            ).create();
-
-            // Log notification
+            // Save notification record
             Notification notification = new Notification();
             notification.setTicket(ticket);
             notification.setPhoneNumber(toPhoneNumber);
@@ -49,12 +30,9 @@ public class NotificationService {
             notification.setStatus("SENT");
             notificationRepository.save(notification);
 
-            log.info("SMS sent successfully to {}: {}", toPhoneNumber, message.getSid());
-
         } catch (Exception e) {
-            log.error("Failed to send SMS to {}: {}", toPhoneNumber, e.getMessage());
+            log.error("Failed to log SMS to {}: {}", toPhoneNumber, e.getMessage());
 
-            // Log failed notification
             Notification notification = new Notification();
             notification.setTicket(ticket);
             notification.setPhoneNumber(toPhoneNumber);

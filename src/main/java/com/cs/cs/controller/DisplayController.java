@@ -1,13 +1,12 @@
 package com.cs.cs.controller;
 
-package com.bank.queue.controller;
 
-import com.bank.queue.dto.QueueStats;
-import com.bank.queue.model.Service;
-import com.bank.queue.model.Window;
-import com.bank.queue.repository.ServiceRepository;
-import com.bank.queue.repository.WindowRepository;
-import com.bank.queue.service.QueueService;
+import com.cs.cs.dto.QueueStats;
+import com.cs.cs.model.Service;
+import com.cs.cs.model.Window;
+import com.cs.cs.repository.ServiceRepository;
+import com.cs.cs.repository.WindowRepository;
+import com.cs.cs.service.QueueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

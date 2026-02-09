@@ -1,10 +1,8 @@
 package com.cs.cs.controller;
 
-package com.bank.queue.controller;
-
-import com.bank.queue.dto.CreateTicketRequest;
-import com.bank.queue.dto.TicketResponse;
-import com.bank.queue.service.TicketService;
+import com.cs.cs.dto.CreateTicketRequest;
+import com.cs.cs.dto.TicketResponse;
+import com.cs.cs.service.TicketService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,8 +1,6 @@
 package com.cs.cs.service;
 
-package com.bank.queue.service;
-
-import com.bank.queue.dto.DisplayUpdate;
+import com.cs.cs.dto.DisplayUpdate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

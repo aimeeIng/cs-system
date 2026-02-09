@@ -1,7 +1,5 @@
 package com.cs.cs.dto;
 
-package com.bank.queue.dto;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
