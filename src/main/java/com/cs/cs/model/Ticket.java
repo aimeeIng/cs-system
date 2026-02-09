@@ -1,65 +1,51 @@
 package com.cs.cs.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
+import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "tickets")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "ticket_number", unique = true, nullable = false, length = 10)
     private String ticketNumber;
 
+    @Column(name = "phone_number", nullable = false, length = 20)
     private String phoneNumber;
 
-    @Enumerated(EnumType.STRING)
-    private ServiceType serviceType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_id", nullable = false)
+    private Service service;
 
-    @Enumerated(EnumType.STRING)
-    private TicketStatus status;
+    @Column(length = 20)
+    private String status = "WAITING"; // WAITING, CALLED, SERVING, COMPLETED, EXPIRED
 
-    private int position;
+    @Column(name = "queue_position")
+    private Integer queuePosition;
 
-    private Integer windowNumber;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "window_id")
+    private Window window;
 
-    private LocalDateTime createdAt;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    @PrePersist
-    void onCreate() {
-        createdAt = LocalDateTime.now();
-        status = TicketStatus.WAITING;
-    }
+    @Column(name = "called_at")
+    private LocalDateTime calledAt;
 
-    // getters & setters
+    @Column(name = "served_at")
+    private LocalDateTime servedAt;
 
-    public Ticket() {}
-
-    public void setStatus(TicketStatus status) {
-        this.status = status;
-    }
-
-    public TicketStatus getStatus() {
-        return this.status;
-    }
-    public void setWindowNumber(int windowNumber) {
-        this.windowNumber = windowNumber;
-    }
-
-    public int getWindowNumber() {
-        return this.windowNumber;
-    }
-
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+    @Column(name = "completed_at")
+    private LocalDateTime completedAt;
 }

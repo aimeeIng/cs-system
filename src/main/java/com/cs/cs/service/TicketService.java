@@ -1,43 +1,102 @@
 package com.cs.cs.service;
 
-import com.cs.cs.model.*;
-import com.cs.cs.repository.TicketRepository;
-import org.springframework.stereotype.Service;
+package com.bank.queue.service;
+
+import com.bank.queue.dto.CreateTicketRequest;
+import com.bank.queue.dto.TicketResponse;
+import com.bank.queue.model.Service;
+import com.bank.queue.model.Ticket;
+import com.bank.queue.repository.ServiceRepository;
+import com.bank.queue.repository.TicketRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+@org.springframework.stereotype.Service
+@Slf4j
+@RequiredArgsConstructor
 public class TicketService {
 
     private final TicketRepository ticketRepository;
+    private final ServiceRepository serviceRepository;
+    private final NotificationService notificationService;
+    private final WebSocketService webSocketService;
 
-    public TicketService(TicketRepository ticketRepository) {
-        this.ticketRepository = ticketRepository;
-    }
-
+    /**
+     * Create a new ticket for a customer
+     */
     @Transactional
-    public Ticket createTicket(String phoneNumber, ServiceType type) {
+    public TicketResponse createTicket(CreateTicketRequest request) {
+        // Get service
+        Service service = serviceRepository.findById(request.getServiceId())
+                .orElseThrow(() -> new RuntimeException("Service not found"));
 
-        int position =
-                ticketRepository.countByServiceTypeAndStatus(type, TicketStatus.WAITING) + 1;
+        // Generate ticket number
+        String ticketNumber = generateTicketNumber(service);
 
+        // Calculate queue position
+        Long waitingCount = ticketRepository.countByServiceIdAndStatus(service.getId(), "WAITING");
+        Integer queuePosition = waitingCount.intValue() + 1;
+
+        // Create ticket
         Ticket ticket = new Ticket();
-        ticket.setPhoneNumber(phoneNumber);
-        ticket.setServiceType(type);
-        ticket.setPosition(position);
-        ticket.setTicketNumber(generateTicketNumber(type, position));
+        ticket.setTicketNumber(ticketNumber);
+        ticket.setPhoneNumber(request.getPhoneNumber());
+        ticket.setService(service);
+        ticket.setQueuePosition(queuePosition);
+        ticket.setStatus("WAITING");
 
-        return ticketRepository.save(ticket);
+        ticket = ticketRepository.save(ticket);
+
+        // Send SMS notification
+        notificationService.sendTicketCreatedSMS(ticket);
+
+        // Broadcast queue update
+        webSocketService.broadcastQueueUpdate(service.getName(), queuePosition);
+
+        log.info("Created ticket: {} for service: {}", ticketNumber, service.getName());
+
+        return mapToResponse(ticket);
     }
 
-    private String generateTicketNumber(ServiceType type, int pos) {
-        return type.name().charAt(0) + "-" + String.format("%03d", pos);
+    /**
+     * Generate unique ticket number (e.g., D-001, W-042)
+     */
+    private String generateTicketNumber(Service service) {
+        String dateStr = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        Long count = ticketRepository.countByServiceIdAndStatus(service.getId(), "WAITING") +
+                ticketRepository.countByServiceIdAndStatus(service.getId(), "CALLED") +
+                ticketRepository.countByServiceIdAndStatus(service.getId(), "SERVING") + 1;
+
+        return String.format("%s-%s-%03d", service.getPrefix(), dateStr, count);
     }
-    public Ticket getTicketById(Long id) {
-        return ticketRepository.findById(id)
+
+    /**
+     * Get ticket details
+     */
+    public TicketResponse getTicket(String ticketNumber) {
+        Ticket ticket = ticketRepository.findByTicketNumber(ticketNumber)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
+
+        return mapToResponse(ticket);
     }
 
-    public void deleteTicket(Long id) {
-        ticketRepository.deleteById(id);
+    /**
+     * Map Ticket entity to TicketResponse DTO
+     */
+    private TicketResponse mapToResponse(Ticket ticket) {
+        return TicketResponse.builder()
+                .id(ticket.getId())
+                .ticketNumber(ticket.getTicketNumber())
+                .phoneNumber(ticket.getPhoneNumber())
+                .serviceName(ticket.getService().getName())
+                .status(ticket.getStatus())
+                .queuePosition(ticket.getQueuePosition())
+                .windowNumber(ticket.getWindow() != null ? ticket.getWindow().getWindowNumber() : null)
+                .createdAt(ticket.getCreatedAt())
+                .build();
     }
 }
