@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -23,9 +25,52 @@ public class DisplayController {
     private final WindowRepository windowRepository;
     private final QueueService queueService;
 
+
+    /**
+     * Initialize database with default services and windows
+     * DELETE THIS ENDPOINT AFTER FIRST USE!
+     */
+    @PostMapping("/init")
+    public ResponseEntity<String> initializeDatabase() {
+        // Create services
+        Service deposit = new Service(null, "DEPOSIT", "D", 3, true);
+        Service withdraw = new Service(null, "WITHDRAW", "W", 1, true);
+        Service loan = new Service(null, "LOAN", "L", 1, true);
+
+        serviceRepository.saveAll(Arrays.asList(deposit, withdraw, loan));
+
+        // Create windows
+        List<Window> windows = new ArrayList<>();
+
+        // DEPOSIT windows (3)
+        for (int i = 1; i <= 3; i++) {
+            Window w = new Window();
+            w.setWindowNumber(i);
+            w.setService(deposit);
+            w.setStatus("IDLE");
+            windows.add(w);
+        }
+
+        // WITHDRAW window (1)
+        Window withdrawWindow = new Window();
+        withdrawWindow.setWindowNumber(1);
+        withdrawWindow.setService(withdraw);
+        withdrawWindow.setStatus("IDLE");
+        windows.add(withdrawWindow);
+
+        // LOAN window (1)
+        Window loanWindow = new Window();
+        loanWindow.setWindowNumber(1);
+        loanWindow.setService(loan);
+        loanWindow.setStatus("IDLE");
+        windows.add(loanWindow);
+
+        windowRepository.saveAll(windows);
+
+        return ResponseEntity.ok("Database initialized successfully!");
+    }
     /**
      * Get all active services
-     * GET /api/display/services
      */
     @GetMapping("/services")
     public ResponseEntity<List<Service>> getServices() {

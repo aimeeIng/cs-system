@@ -13,10 +13,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable())  // Disable CSRF for development (enable in production)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/tickets/**", "/api/display/**", "/ws/**").permitAll()
-                        .requestMatchers("/api/teller/**").permitAll() // Add authentication later
+                        // Public endpoints - NO authentication needed
+                        .requestMatchers("/api/tickets/**").permitAll()
+                        .requestMatchers("/api/display/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
+
+                        // Protected endpoints - FOR NOW permit all (we'll add auth later)
+                        .requestMatchers("/api/teller/**").permitAll()  // TODO: Add authentication
+                        .requestMatchers("/api/admin/**").permitAll()   // TODO: Add authentication
+
+                        // Everything else requires authentication
                         .anyRequest().authenticated()
                 );
 

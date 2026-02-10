@@ -17,7 +17,7 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "ticket_number", unique = true, nullable = false, length = 10)
+    @Column(name = "ticket_number", unique = true, nullable = false, length = 20)  // Changed from 10 to 20
     private String ticketNumber;
 
     @Column(name = "phone_number", nullable = false, length = 20)
