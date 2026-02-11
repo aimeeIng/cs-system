@@ -22,7 +22,7 @@ public class SecurityConfig {
 
                         // Protected endpoints - FOR NOW permit all (we'll add auth later)
                         .requestMatchers("/api/teller/**").permitAll()  // TODO: Add authentication
-                        .requestMatchers("/api/admin/**").permitAll()   // TODO: Add authentication
+                        .requestMatchers("/api/admin/**").permitAll()   
 
                         // Everything else requires authentication
                         .anyRequest().authenticated()

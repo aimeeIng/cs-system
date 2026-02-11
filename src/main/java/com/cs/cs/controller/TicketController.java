@@ -28,7 +28,6 @@ public class TicketController {
 
     /**
      * Get ticket by number
-     * GET /api/tickets/{ticketNumber}
      */
     @GetMapping("/{ticketNumber}")
     public ResponseEntity<TicketResponse> getTicket(@PathVariable String ticketNumber) {

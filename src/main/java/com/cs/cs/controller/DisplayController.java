@@ -25,11 +25,6 @@ public class DisplayController {
     private final WindowRepository windowRepository;
     private final QueueService queueService;
 
-
-    /**
-     * Initialize database with default services and windows
-     * DELETE THIS ENDPOINT AFTER FIRST USE!
-     */
     @PostMapping("/init")
     public ResponseEntity<String> initializeDatabase() {
         // Create services
