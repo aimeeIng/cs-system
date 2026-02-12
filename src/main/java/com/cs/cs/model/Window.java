@@ -19,13 +19,5 @@ public class Window {
     @Column(name = "window_number", nullable = false)
     private Integer windowNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id", nullable = false)
-    private Service service;
 
-    @Column(length = 20)
-    private String status = "IDLE"; // IDLE, SERVING
-
-    @Column(name = "current_ticket_id")
-    private Long currentTicketId;
 }
